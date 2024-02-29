@@ -6,21 +6,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigation.NavigationView
+import com.raven.home.R
 import com.raven.home.databinding.HomeFragmentBinding
 import com.raven.home.domain.models.NewsModel
 import com.raven.home.presentation.adapters.ListNewsAdapter
 import com.raven.home.presentation.adapters.ListNewsAdapter.ListNewsListener
 import com.raven.home.presentation.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.NavigableMap
 
 
 @AndroidEntryPoint
@@ -28,7 +29,7 @@ class HomeFragment : Fragment(), ListNewsListener {
     private var viewModel : HomeViewModel? = null
     private var binding : HomeFragmentBinding ? = null
     private var listNewsAdapter: ListNewsAdapter? = null
-
+    private val periodItem = listOf(1, 7, 30)
     private val TAG="HomeFragment"
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +45,22 @@ class HomeFragment : Fragment(), ListNewsListener {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setUpDropDown()
+
+    }
+
+    private fun setUpDropDown() {
+        val adapterDropDown  = ArrayAdapter(requireContext(),R.layout.items_options,periodItem)
+        binding!!.dropDownPeriod.setAdapter(adapterDropDown)
+        binding!!.dropDownPeriod.onItemClickListener = AdapterView.OnItemClickListener {
+        parent, view, position, id ->
+            val itemPeriodSelected = parent.getItemAtPosition(position)
+            viewModel!!.updatePeriodAndFetchNews(itemPeriodSelected as Int)
+        }
     }
 
     private fun observeViewModel() {
@@ -71,6 +88,8 @@ class HomeFragment : Fragment(), ListNewsListener {
 
     override fun onNewsItemClick(item: NewsModel, position: Int) {
         Toast.makeText(context, "$position", Toast.LENGTH_SHORT).show()
+        findNavController().navigate(R.id.action_homeFragment_to_detailsFragment)
+
 
     }
 
