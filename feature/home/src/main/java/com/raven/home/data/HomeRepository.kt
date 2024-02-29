@@ -25,6 +25,7 @@ class HomeRepository @Inject constructor(private val service: HomeService) : Hom
                 ServiceResult.createCall({service.getNews(period, API_KEY)
                 }, {
                     // si entra por aquí, se carga primero la pase de datos
+
                     emit(it.results)
                 }) {
                     emit(emptyList())

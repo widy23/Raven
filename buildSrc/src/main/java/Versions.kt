@@ -9,7 +9,7 @@ object Versions {
     const val coroutines = "1.7.1"
     const val kotlinCore = "1.12.0"
     const val glide = "4.16.0"
-
+    const val shimmer = "0.5.0"
     /** Testing **/
 
     const val junit = "4.13.2"

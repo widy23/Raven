@@ -16,6 +16,7 @@ import Dependencies.navigationUI
 import Dependencies.okHttp
 import Dependencies.retrofit
 import Dependencies.retrofitConverter
+import Dependencies.shimmer
 import ext.androidTestImplementation
 import ext.implementation
 import ext.kapt
@@ -33,7 +34,7 @@ object Dependencies {
     const val lifeCycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifeCycle}"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
-
+    const val shimmer= "com.facebook.shimmer:shimmer:${Versions.shimmer}"
 
     /** Testing **/
 
@@ -69,6 +70,7 @@ fun DependencyHandler.general() {
     implementation(coroutines)
     implementation(kotlinCore)
     implementation(glide)
+    implementation(shimmer)
 
 
 }

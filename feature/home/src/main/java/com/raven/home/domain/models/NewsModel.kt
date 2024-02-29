@@ -11,6 +11,8 @@ data class NewsModel(
     val contenido: String,
     @SerializedName("published_date")
     val date: String,
+    @SerializedName("id")
+    val id: String,
     @SerializedName("media")
     val media: List<MediaMetaData>
 

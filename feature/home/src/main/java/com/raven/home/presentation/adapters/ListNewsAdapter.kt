@@ -34,17 +34,12 @@ class ListNewsAdapter(private val listNews: List<NewsModel>,private val  actionL
             position: Int,
             listNews: List<NewsModel>
         ) {
-            val urls =modelNews.media.last().metaData.last().urlImage
-            Log.d("TAG", "bind:$urls ")
+
             with(binding){
                 txtTitleNews.text= modelNews.titulo
                 txtDate.text= "Published: ${modelNews.date}"
-                txtAuthor.text = modelNews.autor
-                txtContentNews.text= modelNews.contenido
-                // Para cada objeto NewsModel, carga la última imagen de la lista media
                 val imageUrl= modelNews.media.run {
                     last().metaData.last().urlImage
-
                 }
                 Glide.with(actionListener)
                     .load(imageUrl)
@@ -53,12 +48,9 @@ class ListNewsAdapter(private val listNews: List<NewsModel>,private val  actionL
                     actionListener.onNewsItemClick(modelNews,position)
                 }
             }
-
-
-
         }
 
-        }
+    }
 
 
 

@@ -10,7 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -26,10 +26,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), ListNewsListener {
-    private var viewModel : HomeViewModel? = null
+    private val viewModel : HomeViewModel by activityViewModels <HomeViewModel>()
     private var binding : HomeFragmentBinding ? = null
     private var listNewsAdapter: ListNewsAdapter? = null
     private val periodItem = listOf("1", "7", "30")
+    private val defaultPeriodNews="1"
     private val TAG="HomeFragment"
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,9 +38,13 @@ class HomeFragment : Fragment(), ListNewsListener {
         savedInstanceState: Bundle?
     ): View? {
         binding= HomeFragmentBinding.inflate(inflater,container,false)
-        viewModel =ViewModelProvider(this)[HomeViewModel::class.java]
-        viewModel!!.updatePeriodAndFetchNews("1")
+        callDefaultPeriod()
         return binding?.root
+    }
+
+    private fun callDefaultPeriod() {
+        viewModel.activateShimmer(true)
+        viewModel.updatePeriodAndFetchNews(defaultPeriodNews)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,14 +63,28 @@ class HomeFragment : Fragment(), ListNewsListener {
         val adapterDropDown  = ArrayAdapter(requireContext(),R.layout.items_options,periodItem)
         binding!!.dropDownPeriod.setAdapter(adapterDropDown)
         binding!!.dropDownPeriod.onItemClickListener = AdapterView.OnItemClickListener {
-        parent, view, position, id ->
+                parent, _, position, _ ->
             val itemPeriodSelected = parent.getItemAtPosition(position)
-            viewModel!!.updatePeriodAndFetchNews(itemPeriodSelected.toString())
+            viewModel.updatePeriodAndFetchNews(itemPeriodSelected.toString())
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner){
+            if (it)removeShimmerAnimation()
         }
     }
 
+    private fun removeShimmerAnimation() {
+        with(binding!!){
+            linearLayout.visibility = View.VISIBLE
+            layoutMenu.visibility = View.VISIBLE
+            rcvListNews.visibility = View.VISIBLE
+
+        }
+
+    }
+
     private fun observeViewModel() {
-            viewModel?.news?.observe(viewLifecycleOwner){
+            viewModel.news.observe(viewLifecycleOwner){
                 Log.d(TAG, "observeViewModel: $it")
                 it?.let {
                     setUpUiRecycler(it)
@@ -91,10 +110,8 @@ class HomeFragment : Fragment(), ListNewsListener {
 
     override fun onNewsItemClick(item: NewsModel, position: Int) {
         Toast.makeText(context, "$position", Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "onNewsItemClick: $item")
+          viewModel.setSelectedNews(item)
         findNavController().navigate(R.id.action_homeFragment_to_detailsFragment)
-
-
     }
-
-
 }
