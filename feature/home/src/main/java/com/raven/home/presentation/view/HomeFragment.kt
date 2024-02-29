@@ -64,8 +64,6 @@ class HomeFragment : Fragment(), ListNewsListener {
             }
 
     }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
