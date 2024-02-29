@@ -17,7 +17,6 @@ dependencies {
     testing()
     navigation()
 
-    implementation(project(":app"))
     implementation(project(":core"))
     implementation(project(":feature:home"))
     implementation(project(":common:network"))
