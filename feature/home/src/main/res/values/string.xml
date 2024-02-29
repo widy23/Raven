@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="welcome_message"> Raven News</string>
+    <string name="content_news"> Contenido :</string>
+    <string name="publish_date"> Publish :</string>
+
+
+</resources>
