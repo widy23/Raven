@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class NewsModel(
     @SerializedName("title")
-    val titulo:String,
+    val titulo:String?,
     @SerializedName("byline")
-    val autor:String,
+    val autor:String?,
     @SerializedName("adx_keywords")
-    val contenido: String,
+    val contenido: String?,
     @SerializedName("published_date")
-    val date: String,
+    val date: String?,
     @SerializedName("id")
-    val id: String,
+    val id: String?,
     @SerializedName("media")
-    val media: List<MediaMetaData>
+    val media: List<MediaMetaData>?
 
 )
 

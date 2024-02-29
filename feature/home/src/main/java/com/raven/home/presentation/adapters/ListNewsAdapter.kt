@@ -24,7 +24,7 @@ class ListNewsAdapter(private val listNews: List<NewsModel>,private val  actionL
 
     override fun onBindViewHolder(holder: ListNewsVH, position: Int) {
         val card = listNews[position]
-        holder.bind(card, actionListener, position,listNews)    }
+        holder.bind(card, actionListener, position)    }
 
     class ListNewsVH (private val binding: ListNewsItemsBinding): RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
@@ -32,18 +32,11 @@ class ListNewsAdapter(private val listNews: List<NewsModel>,private val  actionL
             modelNews: NewsModel,
             actionListener: HomeFragment,
             position: Int,
-            listNews: List<NewsModel>
         ) {
 
             with(binding){
                 txtTitleNews.text= modelNews.titulo
                 txtDate.text= "Published: ${modelNews.date}"
-                val imageUrl= modelNews.media.run {
-                    last().metaData.last().urlImage
-                }
-                Glide.with(actionListener)
-                    .load(imageUrl)
-                    .into(imgNews)
                 mainItemView.setOnClickListener{
                     actionListener.onNewsItemClick(modelNews,position)
                 }

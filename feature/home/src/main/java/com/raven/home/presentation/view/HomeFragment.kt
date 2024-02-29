@@ -95,7 +95,9 @@ class HomeFragment : Fragment(), ListNewsListener {
     @SuppressLint("SuspiciousIndentation")
     private fun setUpUiRecycler(it: List<NewsModel>) {
         listNewsAdapter = ListNewsAdapter(it, this)
-            with(binding?.rcvListNews){
+
+        with(binding?.rcvListNews){
+            this?.setHasFixedSize(true)
                 this?.layoutManager = LinearLayoutManager(context)
                 this?.itemAnimator = DefaultItemAnimator()
                 this?.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager(context).orientation))
