@@ -29,7 +29,7 @@ class HomeFragment : Fragment(), ListNewsListener {
     private var viewModel : HomeViewModel? = null
     private var binding : HomeFragmentBinding ? = null
     private var listNewsAdapter: ListNewsAdapter? = null
-    private val periodItem = listOf(1, 7, 30)
+    private val periodItem = listOf("1", "7", "30")
     private val TAG="HomeFragment"
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +38,7 @@ class HomeFragment : Fragment(), ListNewsListener {
     ): View? {
         binding= HomeFragmentBinding.inflate(inflater,container,false)
         viewModel =ViewModelProvider(this)[HomeViewModel::class.java]
+        viewModel!!.updatePeriodAndFetchNews("1")
         return binding?.root
     }
 
@@ -59,14 +60,16 @@ class HomeFragment : Fragment(), ListNewsListener {
         binding!!.dropDownPeriod.onItemClickListener = AdapterView.OnItemClickListener {
         parent, view, position, id ->
             val itemPeriodSelected = parent.getItemAtPosition(position)
-            viewModel!!.updatePeriodAndFetchNews(itemPeriodSelected as Int)
+            viewModel!!.updatePeriodAndFetchNews(itemPeriodSelected.toString())
         }
     }
 
     private fun observeViewModel() {
-            viewModel?.newsDataList?.observe(viewLifecycleOwner){
+            viewModel?.news?.observe(viewLifecycleOwner){
                 Log.d(TAG, "observeViewModel: $it")
-                setUpUiRecycler(it)
+                it?.let {
+                    setUpUiRecycler(it)
+                }
             }
         }
 

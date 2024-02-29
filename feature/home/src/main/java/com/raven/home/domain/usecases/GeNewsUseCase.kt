@@ -11,10 +11,10 @@ import javax.inject.Inject
 class GeNewsUseCase @Inject constructor(
     private val repository: HomeRepository,
     private val mapper: GetNewsMapper
-) : BaseUseCase<Unit, List<NewsModel>>() {
+) : BaseUseCase<String, List<NewsModel>>() {
 
 
-    override suspend fun execute(params: Unit): Flow<List<NewsModel>> {
-        return repository.getNews()
+    override suspend fun execute(params: String): Flow<List<NewsModel>> {
+        return repository.getNews(params)
     }
 }

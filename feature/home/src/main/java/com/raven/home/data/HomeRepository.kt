@@ -18,16 +18,11 @@ class HomeRepository @Inject constructor(private val service: HomeService) : Hom
 
     private var period: Int = 1 // Valor predeterminado, puedes cambiarlo según necesites
 
-    // Método para actualizar el período
-    suspend fun updatePeriod(newPeriod: Int) {
-        period = newPeriod
-    }
+    override suspend fun getNews(period:String): Flow<List<NewsModel>> {
+        return flow<List<NewsModel>> {
+            try {
 
-    override suspend fun getNews(): Flow<List<NewsModel>> = flow<List<NewsModel>> {
-        try {
-                val response = service.getNews(period.toString(), API_KEY)
-                ServiceResult.createCall({
-                    response
+                ServiceResult.createCall({service.getNews(period, API_KEY)
                 }, {
                     // si entra por aquí, se carga primero la pase de datos
                     emit(it.results)
@@ -35,10 +30,12 @@ class HomeRepository @Inject constructor(private val service: HomeService) : Hom
                     emit(emptyList())
                 }
 
-        } catch (e: Exception) {
-            // Manejar el error
-            Log.e("NewsRepository", "Error fetching news", e)
-            emit(emptyList())
+            } catch (e: Exception) {
+                // Manejar el error
+                Log.e("NewsRepository", "Error fetching news", e)
+                emit(emptyList())
+            }
         }
     }
+
 }

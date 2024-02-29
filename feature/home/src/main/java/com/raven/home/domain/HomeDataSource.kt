@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface HomeDataSource {
 
-    suspend fun getNews(): Flow<List<NewsModel>>
+    suspend fun getNews(period:String): Flow<List<NewsModel>>
 }
