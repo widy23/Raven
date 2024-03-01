@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MediaClass(
     @SerializedName("url")
-    val urlImage:String,
+    val urlImage:String?,
     @SerializedName("width")
-    val width :Int,
+    val width :Int?,
 )

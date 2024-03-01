@@ -1,5 +1,7 @@
 plugins {
     id(ModulePlugin.MODULE_NAME)
+    id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+
 }
 
 android {

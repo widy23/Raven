@@ -16,6 +16,8 @@ dependencies {
     general()
     testing()
     navigation()
+    kapt("androidx.room:room-compiler:2.6.1")
+    //ksp("androidx.room:room-compiler:2.6.1")
 
     implementation(project(":core"))
     implementation(project(":feature:home"))

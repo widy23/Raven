@@ -7,5 +7,5 @@ abstract class BaseUseCase<Params, Output> {
 
     abstract suspend fun execute(params: Params): Flow<Output>
 
-    open suspend fun execute(): Flow<Output> = execute(Unit as Params)
+    open suspend fun execute(): Flow<Output> = execute(String as Params)
 }

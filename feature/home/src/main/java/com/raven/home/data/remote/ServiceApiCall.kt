@@ -15,22 +15,6 @@ import retrofit2.Response
         }
 
         companion object {
-            fun <T> success(data: T): ServiceResult<T> {
-                return ServiceResult(Status.SUCCESS, data, null)
-            }
-
-            fun <T> successEmpty(): ServiceResult<T> {
-                return ServiceResult(Status.SUCCESS, null, null)
-            }
-
-            fun <T> error(data: T? = null, error: String? = null): ServiceResult<T> {
-                return ServiceResult(Status.ERROR, data, error)
-            }
-
-            fun <T> loading(data: T? = null): ServiceResult<T> {
-                return ServiceResult(Status.LOADING, data, null)
-            }
-
 
             suspend fun <T : Any> createCall(
                 call: suspend () -> Response<T>, onSuccess:suspend (T) -> Unit,
@@ -42,13 +26,20 @@ import retrofit2.Response
                     if (response.isSuccessful && response.body() != null) {
                         onSuccess(response.body()!!)
                     } else {
-                        val error = "ERROR"
-                        onError(error)
+
+                        onError("ERROR")
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     onError("ERROR")
                 }
+            }
+
+            fun <T> error(data: T? = null, error: String? = null): ServiceResult<T> {
+                return ServiceResult(Status.ERROR, data, error)
+            }
+            fun <T> success(data: T): ServiceResult<T> {
+                return ServiceResult(Status.SUCCESS, data, null)
             }
         }
 
