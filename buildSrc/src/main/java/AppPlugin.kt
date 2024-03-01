@@ -17,6 +17,7 @@ open class AppPlugin : Plugin<Project> {
         apply("kotlin-parcelize")
         apply("maven-publish")
         apply("kotlin-kapt")
+
     }
 
     companion object {

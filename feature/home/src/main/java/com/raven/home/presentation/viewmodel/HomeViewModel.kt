@@ -1,5 +1,6 @@
 package com.raven.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raven.home.data.HomeRepository
 import com.raven.home.data.remote.ServiceResult
+import com.raven.home.db.NewsModelDB
 import com.raven.home.domain.models.NewsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,14 +20,15 @@ class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel(){
 
-    private val _news = MutableLiveData <List<NewsModel>> ()
-    val news: LiveData<List<NewsModel>?>  = _news
+
+    private val _news = MutableLiveData <List<NewsModelDB>> ()
+    val news: LiveData<List<NewsModelDB>?>  = _news
 
     private val _loading = MutableLiveData <Boolean> ()
     val loading: LiveData<Boolean>  = _loading
 
-    private val _newsSelected = MutableLiveData <NewsModel> ()
-    val newsSelected: LiveData <NewsModel>  = _newsSelected
+    private val _newsSelected = MutableLiveData <NewsModelDB> ()
+    val newsSelected: LiveData <NewsModelDB>  = _newsSelected
 
 
      fun updatePeriodAndFetchNews(period: String) {
@@ -36,8 +39,14 @@ class HomeViewModel @Inject constructor(
 
             }
         }
+    fun getNewsFromDataBase(){
+        val result=repository.newsFromDb()
+        _news.postValue(result)
 
-    fun setSelectedNews(item: NewsModel) {
+    }
+
+
+    fun setSelectedNews(item: NewsModelDB) {
         _newsSelected.postValue(item)
     }
 

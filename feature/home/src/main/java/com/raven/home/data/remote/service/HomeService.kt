@@ -14,10 +14,6 @@ interface HomeService {
     //TODO("Correctly apply the Path and its answers. The API Key is provided in your PDF document")
     //https://api.nytimes.com/svc/mostpopular/v2/emailed/1.json?api-key=V4Me99XOuOwdxrTCwsOR10HhqWOlRdLO
 
-
-//    @GET("svc/mostpopular/v2/emailed/{period}.json?")
-//    suspend fun getNews(@Path("") period :Int,
-//                        @Query("api-key") apiKey: String): Response<ResponseApiNews>
     @GET("svc/mostpopular/v2/emailed/{period}.json")
     suspend fun getNews(@Path ("period") period:String,
                         @Query("api-key") apiKey: String): Response<ResponseApiNews>

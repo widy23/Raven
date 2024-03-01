@@ -1,19 +1,18 @@
 package com.raven.home.presentation.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.raven.home.databinding.ListNewsItemsBinding
+import com.raven.home.db.NewsModelDB
 import com.raven.home.domain.models.NewsModel
 import com.raven.home.presentation.view.HomeFragment
 
-class ListNewsAdapter(private val listNews: List<NewsModel>,private val  actionListener :HomeFragment):
+class ListNewsAdapter(private val listNews: List<NewsModelDB>,private val  actionListener :HomeFragment):
     RecyclerView.Adapter<ListNewsAdapter.ListNewsVH>(){
     interface ListNewsListener {
-        fun onNewsItemClick(item: NewsModel, position: Int)
+        fun onNewsItemClick(item: NewsModelDB, position: Int)
 
     }
 
@@ -29,7 +28,7 @@ class ListNewsAdapter(private val listNews: List<NewsModel>,private val  actionL
     class ListNewsVH (private val binding: ListNewsItemsBinding): RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bind(
-            modelNews: NewsModel,
+            modelNews: NewsModelDB,
             actionListener: HomeFragment,
             position: Int,
         ) {

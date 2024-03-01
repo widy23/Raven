@@ -37,11 +37,8 @@ class DetailsFragment : Fragment() {
                 txtAuthor.text =it.autor
                 txtDate.text = it.date
                 txtContentNews.text = it.contenido
-                val imageUrl= it.media?.run {
-                    this?.let {
-                        last().metaData?.last()?.urlImage
-                    }
-                }
+                val imageUrl=it.url
+
                 Glide.with(this@DetailsFragment)
                     .load(imageUrl)
                     .into(imgNews)

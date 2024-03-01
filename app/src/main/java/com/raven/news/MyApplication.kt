@@ -11,6 +11,5 @@ class MyApplication : Application(){
     }
 
     private fun checkInternetConnection() {
-        TODO("Not yet implemented")
     }
 }

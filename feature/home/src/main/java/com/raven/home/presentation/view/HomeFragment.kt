@@ -1,6 +1,10 @@
 package com.raven.home.presentation.view
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +20,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.raven.home.R
+import com.raven.home.data.remote.NetworkHelper
 import com.raven.home.databinding.HomeFragmentBinding
+import com.raven.home.db.NewsModelDB
 import com.raven.home.domain.models.NewsModel
 import com.raven.home.presentation.adapters.ListNewsAdapter
 import com.raven.home.presentation.adapters.ListNewsAdapter.ListNewsListener
@@ -26,20 +32,35 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), ListNewsListener {
-    private val viewModel : HomeViewModel by activityViewModels <HomeViewModel>()
-    private var binding : HomeFragmentBinding ? = null
+    private val viewModel: HomeViewModel by activityViewModels<HomeViewModel>()
+    private var binding: HomeFragmentBinding? = null
     private var listNewsAdapter: ListNewsAdapter? = null
     private val periodItem = listOf("1", "7", "30")
-    private val defaultPeriodNews="1"
-    private val TAG="HomeFragment"
+    private val defaultPeriodNews = "1"
+    private val TAG = "HomeFragment"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        checkInternet()
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding= HomeFragmentBinding.inflate(inflater,container,false)
-        callDefaultPeriod()
+        binding = HomeFragmentBinding.inflate(inflater, container, false)
         return binding?.root
+    }
+
+    private fun checkInternet() {
+        if (NetworkHelper.checkInternetConnection(requireContext())) {
+            callDefaultPeriod()
+            Toast.makeText(context, "Hay conexion", Toast.LENGTH_SHORT).show()
+        } else {
+            viewModel.getNewsFromDataBase()
+            Toast.makeText(context, "No Hay conexion", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun callDefaultPeriod() {
@@ -60,21 +81,21 @@ class HomeFragment : Fragment(), ListNewsListener {
     }
 
     private fun setUpDropDown() {
-        val adapterDropDown  = ArrayAdapter(requireContext(),R.layout.items_options,periodItem)
+        val adapterDropDown = ArrayAdapter(requireContext(), R.layout.items_options, periodItem)
         binding!!.dropDownPeriod.setAdapter(adapterDropDown)
-        binding!!.dropDownPeriod.onItemClickListener = AdapterView.OnItemClickListener {
-                parent, _, position, _ ->
-            val itemPeriodSelected = parent.getItemAtPosition(position)
-            viewModel.updatePeriodAndFetchNews(itemPeriodSelected.toString())
-        }
+        binding!!.dropDownPeriod.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
+                val itemPeriodSelected = parent.getItemAtPosition(position)
+                viewModel.updatePeriodAndFetchNews(itemPeriodSelected.toString())
+            }
 
-        viewModel.loading.observe(viewLifecycleOwner){
-            if (it)removeShimmerAnimation()
+        viewModel.loading.observe(viewLifecycleOwner) {
+         //   if (it) removeShimmerAnimation()
         }
     }
 
     private fun removeShimmerAnimation() {
-        with(binding!!){
+        with(binding!!) {
             linearLayout.visibility = View.VISIBLE
             layoutMenu.visibility = View.VISIBLE
             rcvListNews.visibility = View.VISIBLE
@@ -84,36 +105,41 @@ class HomeFragment : Fragment(), ListNewsListener {
     }
 
     private fun observeViewModel() {
-            viewModel.news.observe(viewLifecycleOwner){
-                Log.d(TAG, "observeViewModel: $it")
-                it?.let {
-                    setUpUiRecycler(it)
-                }
+        viewModel.news.observe(viewLifecycleOwner) {
+            Log.d(TAG, "observeViewModel: $it")
+            it?.let {
+                setUpUiRecycler(it)
             }
         }
+    }
 
     @SuppressLint("SuspiciousIndentation")
-    private fun setUpUiRecycler(it: List<NewsModel>) {
+    private fun setUpUiRecycler(it: List<NewsModelDB>) {
         listNewsAdapter = ListNewsAdapter(it, this)
 
-        with(binding?.rcvListNews){
+        with(binding?.rcvListNews) {
             this?.setHasFixedSize(true)
-                this?.layoutManager = LinearLayoutManager(context)
-                this?.itemAnimator = DefaultItemAnimator()
-                this?.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager(context).orientation))
-                this?.adapter = listNewsAdapter
-            }
+            this?.layoutManager = LinearLayoutManager(context)
+            this?.itemAnimator = DefaultItemAnimator()
+            this?.addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    LinearLayoutManager(context).orientation
+                )
+            )
+            this?.adapter = listNewsAdapter
+        }
 
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
     }
 
-    override fun onNewsItemClick(item: NewsModel, position: Int) {
-        Toast.makeText(context, "$position", Toast.LENGTH_SHORT).show()
+    override fun onNewsItemClick(item: NewsModelDB, position: Int) {
         Log.d(TAG, "onNewsItemClick: $item")
-          viewModel.setSelectedNews(item)
+        viewModel.setSelectedNews(item)
         findNavController().navigate(R.id.action_homeFragment_to_detailsFragment)
     }
 }

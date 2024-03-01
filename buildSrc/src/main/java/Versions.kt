@@ -25,4 +25,8 @@ object Versions {
     /** Navigation **/
 
     const val navVersion = "2.5.1"
+
+    /**RoomDB**/
+    const val room_version = "2.6.1"
+
 }
