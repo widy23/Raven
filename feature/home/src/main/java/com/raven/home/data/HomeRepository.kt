@@ -10,6 +10,7 @@ import com.raven.home.domain.models.ResponseApiNews
 import com.raven.home.presentation.Utils.Companion.API_KEY
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
@@ -17,20 +18,22 @@ class HomeRepository @Inject constructor(
     private val newsDao: NewsDao
 ) : HomeDataSource {
 
-    override suspend fun getNews(period: String): Flow<List<NewsModelDB>> {
+    override suspend fun getNews(period: String): Flow<ServiceResult<List<NewsModelDB>>> {
         return flow {
             try {
                 ServiceResult.createCall({ service.getNews(period, API_KEY) },
                     {
                         if (it.results.isNotEmpty()) {
-                            emit(dataToView(it))
+                            emit(ServiceResult.success(dataToView(it)))
                         }
                     }) {
-                    emit(emptyList())
+                    emit(ServiceResult.error(error=it))
+
+                    Log.d("TAG", "getNewsError: $it")
                 }
             } catch (e: Exception) {
                 Log.e("NewsRepository", "Error fetching news", e)
-                emit(emptyList())
+                emit(ServiceResult.error())
             }
         }
     }

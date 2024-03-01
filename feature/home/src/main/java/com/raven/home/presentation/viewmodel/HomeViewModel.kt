@@ -24,6 +24,9 @@ class HomeViewModel @Inject constructor(
     private val _news = MutableLiveData <List<NewsModelDB>> ()
     val news: LiveData<List<NewsModelDB>?>  = _news
 
+    private val _newsError = MutableLiveData <String> ()
+    val newsError: LiveData <String>  = _newsError
+
     private val _loading = MutableLiveData <Boolean> ()
     val loading: LiveData<Boolean>  = _loading
 
@@ -34,7 +37,19 @@ class HomeViewModel @Inject constructor(
      fun updatePeriodAndFetchNews(period: String) {
         viewModelScope.launch {
             repository.getNews(period).collect{
-                _news.postValue(it)
+                when (it.status) {
+                    ServiceResult.Status.SUCCESS -> {
+                        _news.postValue(it.data!!)
+                    }
+                    ServiceResult.Status.ERROR -> {
+                        it.let {
+                            _newsError.postValue(it.toString())
+                        }
+
+                    }
+                    else -> {}
+                }
+
              }
 
             }
@@ -42,7 +57,6 @@ class HomeViewModel @Inject constructor(
     fun getNewsFromDataBase(){
         val result=repository.newsFromDb()
         _news.postValue(result)
-
     }
 
 

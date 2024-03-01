@@ -1,6 +1,7 @@
 package com.raven.home.presentation.view
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -56,10 +57,8 @@ class HomeFragment : Fragment(), ListNewsListener {
     private fun checkInternet() {
         if (NetworkHelper.checkInternetConnection(requireContext())) {
             callDefaultPeriod()
-            Toast.makeText(context, "Hay conexion", Toast.LENGTH_SHORT).show()
         } else {
             viewModel.getNewsFromDataBase()
-            Toast.makeText(context, "No Hay conexion", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -111,6 +110,26 @@ class HomeFragment : Fragment(), ListNewsListener {
                 setUpUiRecycler(it)
             }
         }
+        viewModel.newsError.observe(viewLifecycleOwner){
+            if (it !=null){
+              showDialogError()
+
+            }
+        }
+    }
+
+    private fun showDialogError() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder
+            .setMessage("Error Al cargar los datos ")
+            .setTitle("Error")
+            .setPositiveButton("Close") { dialog, which ->
+                    dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+
     }
 
     @SuppressLint("SuspiciousIndentation")
